@@ -37,6 +37,7 @@ jobs:
             
             # Obtén el número del PR creado
             PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
+            echo "PR_NUMBER=$PR_NUMBER"
 
       - name: Set up GitHub CLI for aprobe and merge
         run: |
@@ -46,6 +47,7 @@ jobs:
       - name: Aprobe and merge PR in Target Repo
         run: |
           # Aprueba y mergea el PR
+          echo "PR_NUMBER=$PR_NUMBER"
           cd cross-repo-pr-2
           gh pr review $PR_NUMBER --approve
           gh pr merge $PR_NUMBER --merge --delete-branch
