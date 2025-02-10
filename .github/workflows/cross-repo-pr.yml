@@ -29,7 +29,7 @@ jobs:
             --title "Auto-PR from ${{ github.repository }}" \
             --body "Sincronización automática desde ${{ github.event.pull_request.html_url }}" \
             --base $TARGET_BRANCH \
-            --head $SOURCE_BRANCH
+            --head $SOURCE_BRANCH || { echo "Error al crear el PR"; exit 1; }
 
           # Get PR number
           PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
