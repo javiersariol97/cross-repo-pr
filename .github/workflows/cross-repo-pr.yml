@@ -46,3 +46,7 @@ jobs:
           cd target-repo
           gh pr review $PR_NUMBER --approve
           gh pr merge $PR_NUMBER --merge
+
+      - name: Logout from GitHub CLI
+        run: |
+          gh auth logout
