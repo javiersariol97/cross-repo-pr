@@ -8,6 +8,11 @@ on:
 jobs:
   create-and-merge-pr:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_repo: 
+          - "javiersariol97/cross-repo-pr-2"
+          - "javiersariol97/cross-repo-pr-3"
     steps:
       - name: Set up GitHub CLI for cloning and creating PR
         run: |
@@ -16,7 +21,7 @@ jobs:
 
       - name: Clone Target Repo
         run: |
-          git clone https://github.com/${{ secrets.TARGET_REPO }}.git target-repo
+          git clone https://github.com/${{ matrix.target_repo }}.git target-repo
 
       - name: Create PR in Target Repo
         env:
