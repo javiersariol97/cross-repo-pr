@@ -28,6 +28,7 @@ jobs:
           TARGET_BRANCH: "staging"
         run: |
           # Crea el PR
+          ls -al
           gh pr create \
             --title "Auto-PR from ${{ github.repository }}" \
             --body "Sincronización automática desde ${{ github.event.pull_request.html_url }}" \
