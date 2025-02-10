@@ -20,7 +20,6 @@ jobs:
 
       - name: Create PR in Target Repo
         env:
-          TARGET_REPO: ${{ secrets.TARGET_REPO }}
           SOURCE_BRANCH: "development"
           TARGET_BRANCH: "staging"
         run: |
@@ -32,7 +31,7 @@ jobs:
             --base $TARGET_BRANCH \
             --head $SOURCE_BRANCH
 
-          # Obtén el número del PR creado
+          # Get PR number
           PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
@@ -44,8 +43,6 @@ jobs:
 
       - name: Approve and merge PR in Target Repo
         run: |
-          PR_NUMBER=$(echo $PR_NUMBER | cut -d "=" -f 2)
-          echo "PR_NUMBER=$PR_NUMBER"
           cd target-repo
           gh pr review $PR_NUMBER --approve
           gh pr merge $PR_NUMBER --merge
