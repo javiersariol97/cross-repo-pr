@@ -15,15 +15,13 @@ jobs:
           gh config set git_protocol https -h github.com
 
       - name: Clone Target Repo
-        env:
-          TARGET_REPO: "javiersariol97/cross-repo-pr-2.git"
         run: |
-          git clone https://github.com/$TARGET_REPO target-repo
+          git clone https://github.com/${{ secrets.TARGET_REPO }}.git target-repo
           cd target-repo
 
       - name: Create PR in Target Repo
         env:
-          TARGET_REPO: "javiersariol97/cross-repo-pr-2"
+          TARGET_REPO: ${{ secrets.TARGET_REPO }}
           SOURCE_BRANCH: "development"
           TARGET_BRANCH: "staging"
         run: |
