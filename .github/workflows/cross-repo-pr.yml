@@ -8,39 +8,30 @@ jobs:
   create-and-merge-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
       - name: Set up GitHub CLI
         run: |
           gh auth login --with-token <<< "${{ secrets.AUTOMATION_PAT }}"
           gh config set git_protocol https -h github.com
 
+      - name: Clone Source Repo
+        env:
+          TARGET_REPO: "javiersariol97/cross-repo-pr-2" 
+        run: |
+          git clone $TARGET_REPO
+          cd cross-repo-pr-2
+
       - name: Create PR in Target Repo
         env:
-          TARGET_REPO: "tu-usuario/repositorio-destino"  # Cambiar al repo destino
-          SOURCE_BRANCH: ${{ github.head_ref }}
+          TARGET_REPO: "javiersariol97/cross-repo-pr-2" 
+          SOURCE_BRANCH: "development"
           TARGET_BRANCH: "staging"
         run: |
-          # Crea una rama en el repositorio destino
-          gh repo clone $TARGET_REPO target-repo
-          cd target-repo
-          git checkout -b auto-pr-${{ github.run_number }}
-
-          # Copia los cambios (ejemplo: copiar todo el contenido)
-          cp -r ../${{ github.repository }}/* .
-
-          # Hace commit y push
-          git add .
-          git commit -m "Auto-sync from ${{ github.repository }}"
-          git push origin auto-pr-${{ github.run_number }}
-
           # Crea el PR
           gh pr create \
             --title "Auto-PR from ${{ github.repository }}" \
             --body "Sincronización automática desde ${{ github.event.pull_request.html_url }}" \
             --base $TARGET_BRANCH \
-            --head auto-pr-${{ github.run_number }}
+            --head $SOURCE_BRANCH
 
           # Obtén el número del PR creado
           PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
