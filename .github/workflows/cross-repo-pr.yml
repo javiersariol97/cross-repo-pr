@@ -28,7 +28,7 @@ jobs:
           TARGET_BRANCH: "staging"
         run: |
           # Crea el PR
-          cd cross-repo-pr-2
+          cd target-repo
           gh pr create \
             --title "Auto-PR from ${{ github.repository }}" \
             --body "Sincronización automática desde ${{ github.event.pull_request.html_url }}" \
