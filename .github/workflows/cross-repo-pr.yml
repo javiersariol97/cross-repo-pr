@@ -29,7 +29,6 @@ jobs:
         run: |
           # Crea el PR
           cd cross-repo-pr-2
-          ls -al
           gh pr create \
             --title "Auto-PR from ${{ github.repository }}" \
             --body "Sincronización automática desde ${{ github.event.pull_request.html_url }}" \
@@ -38,7 +37,7 @@ jobs:
             
             # Obtén el número del PR creado
             PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
-            
+
       - name: Set up GitHub CLI for aprobe and merge
         run: |
           gh auth login --with-token <<< "${{ secrets.AUTOMATION_PAT_APROBE }}"
@@ -46,7 +45,7 @@ jobs:
 
       - name: Aprobe and merge PR in Target Repo
         run: |
-
           # Aprueba y mergea el PR
+          cd cross-repo-pr-2
           gh pr review $PR_NUMBER --approve
           gh pr merge $PR_NUMBER --merge --delete-branch
