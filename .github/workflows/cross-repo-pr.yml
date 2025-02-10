@@ -9,7 +9,7 @@ jobs:
   create-and-merge-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up GitHub CLI
+      - name: Set up GitHub CLI for cloning and creating PR
         run: |
           gh auth login --with-token <<< "${{ secrets.AUTOMATION_PAT }}"
           gh config set git_protocol https -h github.com
@@ -36,6 +36,13 @@ jobs:
             --base $TARGET_BRANCH \
             --head $SOURCE_BRANCH
 
+      - name: Set up GitHub CLI for aprobe and merge
+        run: |
+          gh auth login --with-token <<< "${{ secrets.AUTOMATION_PAT_APROBE }}"
+          gh config set git_protocol https -h github.com
+
+      - name: Aprobe and merge PR in Target Repo
+        run: |
           # Obtén el número del PR creado
           PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
 
