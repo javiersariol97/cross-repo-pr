@@ -28,6 +28,7 @@ jobs:
           TARGET_BRANCH: "staging"
         run: |
           # Crea el PR
+          cd cross-repo-pr-2
           ls -al
           gh pr create \
             --title "Auto-PR from ${{ github.repository }}" \
