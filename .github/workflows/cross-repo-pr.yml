@@ -1,1 +1,57 @@
-first
+name: Cross-Repo PR
+
+on:
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  create-and-merge-pr:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_repo: 
+          - "javiersariol97/cross-repo-pr-2"
+          - "javiersariol97/cross-repo-pr-3"
+    steps:
+      - name: Set up GitHub CLI for cloning and creating PR
+        run: |
+          gh auth login --with-token <<< "${{ secrets.AUTOMATION_PAT }}"
+          gh config set git_protocol https -h github.com
+
+      - name: Clone Target Repo
+        run: |
+          git clone https://github.com/${{ matrix.target_repo }}.git target-repo
+
+      - name: Create PR in Target Repo
+        env:
+          SOURCE_BRANCH: "development"
+          TARGET_BRANCH: "staging"
+        run: |
+          # Crea el PR
+          cd target-repo
+          gh pr create \
+            --title "Auto-PR from ${{ github.repository }}" \
+            --body "Sincronización automática desde ${{ github.event.pull_request.html_url }}" \
+            --base $TARGET_BRANCH \
+            --head $SOURCE_BRANCH
+
+          # Get PR number
+          PR_NUMBER=$(gh pr list --state open --base $TARGET_BRANCH --json number -q ".[0].number")
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Set up GitHub CLI for approve and merge
+        run: |
+          gh auth logout
+          gh auth login --with-token <<< "${{ secrets.AUTOMATION_PAT_APROBE }}"
+          gh config set git_protocol https -h github.com
+
+      - name: Approve and merge PR in Target Repo
+        run: |
+          cd target-repo
+          gh pr review $PR_NUMBER --approve
+          gh pr merge $PR_NUMBER --merge
+
+      - name: Logout from GitHub CLI
+        run: |
+          gh auth logout
