@@ -17,7 +17,6 @@ jobs:
       - name: Clone Target Repo
         run: |
           git clone https://github.com/${{ secrets.TARGET_REPO }}.git target-repo
-          cd target-repo
 
       - name: Create PR in Target Repo
         env:
@@ -50,4 +49,4 @@ jobs:
           echo "PR_NUMBER=$PR_NUMBER"
           cd target-repo
           gh pr review $PR_NUMBER --approve
-          gh pr merge $PR_NUMBER --merge --delete-branch
+          gh pr merge $PR_NUMBER --merge
