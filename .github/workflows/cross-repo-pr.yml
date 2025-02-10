@@ -50,3 +50,4 @@ jobs:
           cd target-repo
           gh pr review $PR_NUMBER --approve
           gh pr merge $PR_NUMBER --merge
+          
