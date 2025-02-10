@@ -1,4 +1,4 @@
-name: Auto-Create and Merge PR in Staging Repo
+name: cross-repo-pr
 
 on:
   pull_request:
